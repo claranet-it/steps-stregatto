@@ -1,0 +1,5 @@
+{
+    "name": "Brickly Interaction Tool",
+    "version": "1.0",
+    "description": "This plugin allows to connect to Claranet's Brickly tool in order to get informations about developers' skills and effort"
+}

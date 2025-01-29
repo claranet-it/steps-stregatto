@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+
+  cheshire-cat-core:
+    build:
+      context: ./core
+    container_name: portfolio_cheshire_cat
+    environment:
+      - PYTHONUNBUFFERED=1
+      - WATCHFILES_FORCE_POLLING=true
+      - CORE_HOST=${CORE_HOST:-localhost}
+      - CORE_PORT=${CORE_PORT:-1865}
+      - CORE_USE_SECURE_PROTOCOLS=${CORE_USE_SECURE_PROTOCOLS:-}
+      - API_KEY=${API_KEY:-}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - DEBUG=${DEBUG:-true}
+      - SAVE_MEMORY_SNAPSHOTS=${SAVE_MEMORY_SNAPSHOTS:-false}
+      - BEARER=${BEARER:-}
+      - DEV=${DEV:-}
+      - PORTFOLIO_URL=${PORTFOLIO_URL:-}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
+      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-}
+      - BRICKLY_TEST_ENV=${BRICKLY_TEST_ENV:-}
+    ports:
+      - ${CORE_PORT:-1865}:80
+    volumes:
+      - ./core:/app
+      # - ~/.aws:/root/.aws
+    command:
+      - python
+      - "-m"
+      - "cat.main"
+    restart: unless-stopped

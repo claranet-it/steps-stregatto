@@ -1,0 +1,42 @@
+name: Cheshire-Cat Action on Pull Requests
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
+
+jobs:
+  black:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: psf/black@stable
+        with:
+          options: "--check --verbose"
+          src: "./core/cat/plugins/portfolio_tool"
+          version: "23.12.1"
+  isort:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: isort/isort-action@v1
+        with:
+          configuration: --check-only --diff --profile black
+          sort-paths: "./core/cat/plugins/portfolio_tool"
+  test:
+    needs: [ black, isort ]
+    name: "Run Tests"
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cat up
+        run: docker-compose up -d
+      - name: Test
+        run: docker exec portfolio_cheshire_cat python -m pytest --color=yes .
+      - name: Cat down
+        run: docker-compose down
