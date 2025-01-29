@@ -4,6 +4,7 @@ import requests
 from langchain_core.language_models.llms import LLM
 from langchain_openai.chat_models import ChatOpenAI
 from langchain_ollama import ChatOllama
+from langchain_community.chat_models import BedrockChat
 
 
 
@@ -77,3 +78,21 @@ class CustomOllama(ChatOllama):
         if kwargs["base_url"].endswith("/"):
             kwargs["base_url"] = kwargs["base_url"][:-1]
         super().__init__(**kwargs)
+
+
+class CustomBedrock(BedrockChat):
+    """
+    In order to set temperature, top_p and top_k as settings in the CheshireCat FE we need to re-elaborate those
+    parameters and put them into a model_kwargs dict that we will pass to BedrockChat
+    """
+
+    def __init__(self, model_id, temperature, top_p, top_k, **kwargs: Any):
+        super().__init__(
+            model_id=model_id,
+            model_kwargs={
+                "temperature": temperature,
+                "top_p": top_p,
+                "top_k": top_k,
+            },
+            **kwargs
+        )
