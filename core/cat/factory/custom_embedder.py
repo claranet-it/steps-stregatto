@@ -2,10 +2,11 @@ import re
 import os
 import string
 import json
-from typing import List
+from typing import List, Any
 from itertools import combinations
 from sklearn.feature_extraction.text import CountVectorizer
 from langchain_core.embeddings import Embeddings
+from langchain_community.embeddings import BedrockEmbeddings
 import httpx
 
 
@@ -64,3 +65,21 @@ class CustomOpenAIEmbeddings(Embeddings):
         ret = httpx.post(self.url, data=payload, timeout=None)
         ret.raise_for_status()
         return ret.json()["data"][0]["embedding"]
+
+
+class CustomBedrockEmbeddings(BedrockEmbeddings):
+    """
+    In order to set temperature, top_p and top_k as settings in the CheshireCat FE we need to re-elaborate those
+    parameters and put them into a model_kwargs dict that we will pass to BedrockChat
+    """
+
+    def __init__(self, model_id, temperature, top_p, top_k, **kwargs: Any):
+        super().__init__(
+            model_id=model_id,
+            model_kwargs={
+                "temperature": temperature,
+                "top_p": top_p,
+                "top_k": top_k,
+            },
+            **kwargs
+        )

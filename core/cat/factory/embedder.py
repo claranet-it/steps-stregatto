@@ -6,7 +6,7 @@ from langchain_community.embeddings import FakeEmbeddings, FastEmbedEmbeddings
 from langchain_openai import OpenAIEmbeddings, AzureOpenAIEmbeddings
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from fastembed import TextEmbedding
-from cat.factory.custom_embedder import DumbEmbedder, CustomOpenAIEmbeddings
+from cat.factory.custom_embedder import DumbEmbedder, CustomOpenAIEmbeddings, CustomBedrockEmbeddings
 from cat.mad_hatter.mad_hatter import MadHatter
 from langchain_cohere import CohereEmbeddings
 
@@ -166,6 +166,27 @@ class EmbedderGeminiChatConfig(EmbedderSettings):
     )
 
 
+class EmbedderBedrockChatConfig(EmbedderSettings):
+    model_id: str = "amazon.titan-embed-text-v1"
+    temperature: float = 0.7
+    top_p: float = 1
+    top_k: float = 2
+
+    _pyclass: Type = CustomBedrockEmbeddings
+
+    @classmethod
+    def get_embedder_from_config(cls, config):
+        return cls._pyclass.default(**config)
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "humanReadableName": "AWS Bedrock Embedder",
+            "description": "Configuration for AWS Bedrock Embedder",
+            "link": "https://aws.amazon.com/bedrock/",
+        }
+    )
+
+
 def get_allowed_embedder_models():
     list_embedder_default = [
         EmbedderQdrantFastEmbedConfig,
@@ -174,6 +195,7 @@ def get_allowed_embedder_models():
         EmbedderGeminiChatConfig,
         EmbedderOpenAICompatibleConfig,
         EmbedderCohereConfig,
+        EmbedderBedrockChatConfig,
         EmbedderDumbConfig,
         EmbedderFakeConfig,
     ]

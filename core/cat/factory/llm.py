@@ -13,7 +13,7 @@ from typing import Type
 import json
 from pydantic import BaseModel, ConfigDict
 
-from cat.factory.custom_llm import LLMDefault, LLMCustom, CustomOpenAI, CustomOllama
+from cat.factory.custom_llm import LLMDefault, LLMCustom, CustomOpenAI, CustomOllama, CustomBedrock
 from cat.mad_hatter.mad_hatter import MadHatter
 
 
@@ -300,6 +300,32 @@ class LLMAnthropicChatConfig(LLMSettings):
         }
     )
 
+
+class LLMBedrockChatConfig(LLMSettings):
+    """Configuration for Bedrock Chat model
+    """
+
+    model_id: str = "anthropic.claude-3-sonnet-20240229-v1:0"
+    temperature: float = 0.2
+    top_p: float = 1.0
+    top_k: float = 50
+    streaming: bool = True
+
+    _pyclass: Type = CustomBedrock
+
+    @classmethod
+    def get_llm_from_config(cls, config):
+        return cls._pyclass.default(**config)
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "humanReadableName": "AWS Bedrock",
+            "description": "Configuration for AWS Bedrock LLMs",
+            "link": "https://aws.amazon.com/bedrock/",
+        }
+    )
+
+
 def get_allowed_language_models():
     list_llms_default = [
         LLMOpenAIChatConfig,
@@ -312,6 +338,7 @@ def get_allowed_language_models():
         LLMAzureChatOpenAIConfig,
         LLMHuggingFaceEndpointConfig,
         LLMHuggingFaceTextGenInferenceConfig,
+        LLMBedrockChatConfig,
         LLMCustomConfig,
         LLMDefaultConfig,
         LLMAnthropicChatConfig
