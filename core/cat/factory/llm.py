@@ -285,7 +285,7 @@ class LLMGeminiChatConfig(LLMSettings):
 
 class LLMAnthropicChatConfig(LLMSettings):
     api_key: str
-    model: str = "claude-3-5-sonnet-20241022"
+    model: str = "eu.anthropic.claude-3-5-sonnet-20240620-v1:0"
     temperature: float = 0.7
     max_tokens: int = 8192
     max_retries: int = 2
@@ -305,7 +305,7 @@ class LLMBedrockChatConfig(LLMSettings):
     """Configuration for Bedrock Chat model
     """
 
-    model_id: str = "anthropic.claude-3-sonnet-20240229-v1:0"
+    model_id: str = "eu.anthropic.claude-3-5-sonnet-20240620-v1:0"
     temperature: float = 0.2
     top_p: float = 1.0
     top_k: float = 50
