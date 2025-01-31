@@ -167,7 +167,7 @@ class EmbedderGeminiChatConfig(EmbedderSettings):
 
 
 class EmbedderBedrockChatConfig(EmbedderSettings):
-    model_id: str = "amazon.titan-embed-text-v1"
+    model_id: str = "amazon.titan-embed-text-v2:0"
     temperature: float = 0.7
     top_p: float = 1
     top_k: float = 2
